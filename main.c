@@ -144,7 +144,7 @@ int main()
         state.delta = getDelta(&state.win);
         state.ticks = SDL_GetTicks();
 
-        imguiNewFrame();
+        imguiNewFrame(); // this needs cpp because im toooo lazy to implement cimgui
             ImGui::Begin("status");
             ImGui::Text("Camera pos: %.2f, %.2f, %.2f", state.cam.position.x, state.cam.position.y, state.cam.position.z);
             ImGui::Text("Fps: %.2f", getFPS(&state.win));
