@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(implc)
+project(test)
 set(CMAKE_CXX_STANDARD 20)
 
 # SDL3
@@ -22,14 +22,13 @@ add_library(imgui STATIC
 target_include_directories(imgui PUBLIC ${IMGUI_DIR} ${IMGUI_DIR}/backends)
 target_link_libraries(imgui PUBLIC SDL3::SDL3)
 
-# Particle demo
-add_executable(implc main.c)
+add_executable(test main.c)
 set_source_files_properties(main.c PROPERTIES LANGUAGE CXX)  # compile .c as C++
-target_include_directories(implc PRIVATE wrapper wrapper/libs/imgui wrapper/libs/imgui/backends)
-target_link_libraries(implc PRIVATE imgui SDL3::SDL3)
+target_include_directories(test PRIVATE wrapper wrapper/libs/imgui wrapper/libs/imgui/backends)
+target_link_libraries(test PRIVATE imgui SDL3::SDL3)
 
 if(APPLE AND CMAKE_SYSTEM_PROCESSOR STREQUAL "arm64")
-    target_compile_options(implc PRIVATE
+    target_compile_options(test PRIVATE
         -O3
         -march=armv8.5-a
         -mtune=apple-m2
