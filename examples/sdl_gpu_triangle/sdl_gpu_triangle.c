@@ -128,8 +128,7 @@ static bool render()
     ImGui::ColorEdit3("Global tint", state.tint);
 
     ImGui::Spacing();
-    if (ImGui::Button("Reset to defaults"))
-        reset_triangle();
+    if (ImGui::Button("Reset to defaults")) reset_triangle();
 
     ImGui::SeparatorText("Info");
     ImGui::Text("Time  %.2f s", state.ticks);

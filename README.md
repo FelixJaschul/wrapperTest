@@ -39,12 +39,12 @@ Example repository demonstrating usage of my [wrapper](https://github.com/FelixJ
 
 This repository includes example applications demonstrating different rendering techniques:
 
-### `examples/main` — Voxel Raymarching
+### `examples/sdl_gpu_voxel` — Voxel Raymarching (GPU)
 
-First-person voxel raymarching demo with procedural voxel generation.
+First-person voxel raymarching demo with procedural voxel generation using SDL_GPU.
 
 **Files:**
-- `main.c` — Main application with camera controls and uniform submission
+- `sdl_gpu_voxel.c` — Main application with camera controls and uniform submission
 - `voxel_raymarch.vert` — Full-screen triangle vertex shader
 - `voxel_raymarch.frag` — Raymarching fragment shader with DDA voxel traversal
 
@@ -54,21 +54,39 @@ First-person voxel raymarching demo with procedural voxel generation.
 
 **Build target:**
 ```bash
-cmake --build cmake-build-debug --target main
+cmake --build cmake-build-debug --target sdl_gpu_voxel
 ```
 
-### `examples/tri` — Basic Triangle
+### `examples/sdl_cpu_voxel` — Voxel Raymarching (CPU)
 
-Simple colored triangle rendering example.
+Same voxel raymarching demo but using CPU-based software rendering with SDL_Renderer.
+
+**Build target:**
+```bash
+cmake --build cmake-build-debug --target sdl_cpu_voxel
+```
+
+### `examples/sdl_gpu_triangle` — Basic Triangle (GPU)
+
+Simple colored triangle rendering example using SDL_GPU with GPU shaders.
 
 **Files:**
-- `tri.c` — Main application with triangle vertex/fragment uniforms
+- `sdl_gpu_triangle.c` — Main application with triangle vertex/fragment uniforms
 - `basic_triangle.vert` — Vertex shader with position and color attributes
 - `basic_triangle.frag` — Fragment shader with global tint uniform
 
 **Build target:**
 ```bash
-# Add a separate target in CMakeLists.txt if you want to build this independently
+cmake --build cmake-build-debug --target sdl_gpu_triangle
+```
+
+### `examples/sdl_cpu_triangle` — Basic Triangle (CPU)
+
+Same triangle example but using CPU-based software rendering with SDL_Renderer.
+
+**Build target:**
+```bash
+cmake --build cmake-build-debug --target sdl_cpu_triangle
 ```
 
 ## Project Structure
@@ -81,14 +99,18 @@ implc/
 │   └── build_shaders.sh      # Compiles all shaders in the repo
 ├── shaders/                # Shared/common shaders
 ├── examples/
-│   ├── main/               # Voxel raymarching example
-│   │   ├── main.c
+│   ├── sdl_gpu_voxel/      # Voxel raymarching (SDL_GPU)
+│   │   ├── sdl_gpu_voxel.c
 │   │   ├── voxel_raymarch.vert
 │   │   └── voxel_raymarch.frag
-│   └── tri/                # Basic triangle example
-│       ├── tri.c
-│       ├── basic_triangle.vert
-│       └── basic_triangle.frag
+│   ├── sdl_cpu_voxel/      # Voxel raymarching (SDL_Renderer, CPU)
+│   │   └── sdl_cpu_voxel.c
+│   ├── sdl_gpu_triangle/   # Basic triangle (SDL_GPU)
+│   │   ├── sdl_gpu_triangle.c
+│   │   ├── basic_triangle.vert
+│   │   └── basic_triangle.frag
+│   └── sdl_cpu_triangle/   # Basic triangle (SDL_Renderer, CPU)
+│       └── sdl_cpu_triangle.c
 └── wrapper/                # SDL3 wrapper library (submodule)
 ```
 
@@ -104,7 +126,7 @@ implc/
    # examples/my_example/my_example.c
    ```
 
-3. **Add shaders** (optional) in the same directory:
+3. **Add shaders** (optional, for GPU examples) in the same directory:
    ```bash
    # examples/my_example/my_shader.vert
    # examples/my_example/my_shader.frag
@@ -112,7 +134,9 @@ implc/
 
 4. **Update `CMakeLists.txt`** — add your directory to `EXAMPLE_DIRS`:
    ```cmake
-   set(EXAMPLE_DIRS "examples/main" "examples/tri" "examples/my_example")
+   set(EXAMPLE_DIRS "examples/sdl_gpu_voxel" "examples/sdl_cpu_voxel" 
+                    "examples/sdl_gpu_triangle" "examples/sdl_cpu_triangle"
+                    "examples/my_example")
    ```
 
 5. **Build** — your example will be compiled automatically:
@@ -127,7 +151,7 @@ The build system automatically compiles all shaders in configured directories. T
 1. **Place shader files** in any of the configured directories (or add a new directory)
 2. **Update `scripts/build_shaders.sh`** — add your directory to the `SHADER_DIRS` variable:
    ```bash
-   SHADER_DIRS="shaders examples/main examples/tri your/new/dir"
+   SHADER_DIRS="shaders examples/sdl_gpu_voxel examples/sdl_gpu_triangle your/new/dir"
    ```
 3. **Run the build** — shaders are compiled automatically during CMake build
 

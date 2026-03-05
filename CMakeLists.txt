@@ -8,7 +8,8 @@ if(APPLE)
     endif()
 endif()
 
-set(EXAMPLE_DIRS "examples/main" "examples/tri")
+set(EXAMPLE_DIRS "examples/sdl_gpu_voxel"
+                 "examples/sdl_gpu_triangle" "examples/sdl_cpu_triangle")
 
 # SDL3
 set(SDL_TEST_LIBRARY OFF CACHE BOOL "" FORCE)

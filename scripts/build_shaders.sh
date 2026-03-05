@@ -18,8 +18,7 @@ OUTPUT_DIR="${1:-shaders}"
 
 # Space-separated list of directories containing shader files (.vert/.frag)
 # Paths are relative to the repository root
-SHADER_DIRS="shaders examples/main
-                     examples/tri"
+SHADER_DIRS="shaders examples/sdl_gpu_voxel examples/sdl_gpu_triangle"
 # =============================================================================
 
 # Ensure output directory exists
