@@ -7,6 +7,9 @@ init:
 	git submodule update --init --recursive
 	./scripts/build_shadercross.sh || true
 
+build_shadercross:
+	./shaders/build_shadercross.sh
+
 build:
 	mkdir -p cmake-build-debug
 	cd cmake-build-debug && cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON

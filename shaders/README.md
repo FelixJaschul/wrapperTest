@@ -1,5 +1,14 @@
 # Shader Editing Guide
 
+## Building shaders
+
+**Before building the game**, run:
+```bash
+./shaders/build_shadercross.sh
+```
+
+This builds the `shadercross` tool needed for shader conversion. The main shader compilation (`build_shaders.sh`) runs automatically during the CMake build.
+
 ## Shader responsibilities
 
 - `voxel_raymarch.vert/.frag`: raymarch + shading from uniforms
