@@ -15,15 +15,6 @@
 #define HEIGHT 850
 
 typedef struct {
-    float cam_pos[4];
-    float cam_right[4];
-    float cam_up[4];
-    float cam_forward[4];
-    float screen[4];
-    float render_cfg[4];
-} VoxelUniforms;
-
-typedef struct {
     Window_t win;
     Camera cam;
     Input input;
@@ -44,6 +35,15 @@ static state_t state = {0};
 
 static void render_callback(Gpu *gpu, SDL_GPUCommandBuffer *cmd, SDL_GPURenderPass *pass, GpuRenderData *data)
 {
+    typedef struct {
+        float cam_pos[4];
+        float cam_right[4];
+        float cam_up[4];
+        float cam_forward[4];
+        float screen[4];
+        float render_cfg[4];
+    } VoxelUniforms;
+
     const float aspect = (data->height > 0) ? ((float)data->width / (float)data->height) : 1.0f;
     const float tan_half_fov = tanf((state.cam.fov * PI / 180.0f) * 0.5f);
 
