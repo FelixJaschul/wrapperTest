@@ -104,7 +104,7 @@ int main()
     windowInit(&state.win);
     state.win.width  = WIDTH;
     state.win.height = HEIGHT;
-    state.win.title  = "raycast";
+    state.win.title  = "SDL GPU voxel";
 
     ASSERT(createWindow(&state.win));
 

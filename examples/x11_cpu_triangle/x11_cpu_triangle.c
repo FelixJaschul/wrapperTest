@@ -1,8 +1,6 @@
 #include <cstdio>
 
 #define CORE_IMPLEMENTATION
-#define SDL_IMPLEMENTATION
-#define IMGUI_IMPLEMENTATION
 #define KEYS_IMPLEMENTATION
 #include "core.h"
 
@@ -15,20 +13,10 @@ int main()
     windowInit(&win);
     win.width = 800;
     win.height = 600;
-    win.title = "SDL CPU Triangle";
+    win.title = "X11 CPU Triangle";
     ASSERT(createWindow(&win));
 
     inputInit(&input);
-
-    imguiInit(&win, win.renderer);
-
-    SDL_Texture *tex = SDL_CreateTexture(
-        win.renderer,
-        SDL_PIXELFORMAT_ABGR8888,
-        SDL_TEXTUREACCESS_STREAMING,
-        win.bWidth,
-        win.bHeight
-    );
 
     bool running = true;
     while (running)
@@ -54,20 +42,10 @@ int main()
             }
         }
 
-        updateFramebuffer(&win, tex);
-
-        imguiNewFrame();
-        ImGui::SetNextWindowPos(ImVec2(10, 10));
-        ImGui::Begin("STATE", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs);
-        ImGui::Text("FPS: %.1f  |  Time: %.2fs", ImGui::GetIO().Framerate, (float)SDL_GetTicks() * 0.001f);
-        ImGui::End();
-        imguiEndFrame(&win);
-
-        SDL_RenderPresent(win.renderer);
+        updateFramebuffer(&win);
         updateFrame(&win);
     }
 
-    SDL_DestroyTexture(tex);
     destroyWindow(&win);
     return 0;
 }

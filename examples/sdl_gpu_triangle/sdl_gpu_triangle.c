@@ -16,7 +16,7 @@ int main()
     windowInit(&win);
     win.width = 800;
     win.height = 600;
-    win.title = "GPU Triangle";
+    win.title = "SDL GPU Triangle";
     ASSERT(createWindow(&win));
 
     inputInit(&input);

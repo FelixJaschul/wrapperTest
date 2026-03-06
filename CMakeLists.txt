@@ -11,6 +11,7 @@ set(EXAMPLE_DIRS_SDL
 )
 
 set(EXAMPLE_DIRS_X11
+        "examples/x11_cpu_triangle"
         "examples/x11_cpu_model"
 )
 
