@@ -1,7 +1,10 @@
-all: boot
-allc: clean boot
+boot_with_shaders: init build run
 
-boot: init build run
+g = sdl_cpu_triangle
+# make g=sdl_gpu_triangle run ...
+# g=sdl_cpu_triangel
+# g=sdl_gpu_triangel
+# g=sdl_gpu_voxel
 
 init:
 	git submodule update --init --recursive
@@ -14,7 +17,7 @@ build:
 	ln -sf cmake-build-debug/compile_commands.json compile_commands.json
 
 run:
-	./cmake-build-debug/test
+	./cmake-build-debug/$(g)
 
 clean:
-	rm -rf cmake-build-debug compile_commands.json .build
+	rm -rf cmake-build-debug compile_commands.json .build imgui.ini

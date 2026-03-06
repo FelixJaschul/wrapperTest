@@ -44,12 +44,9 @@ static state_t state = {0};
 
 static void update()
 {
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        ImGui_ImplSDL3_ProcessEvent(&event);
-        if (event.type == SDL_EVENT_QUIT) state.running = false;
-    }
+    pollEvents(&state.win, &state.input);
 
+    if (isKeyDown(&state.input, KEY_ESCAPE)) state.running = false;
     if (isKeyDown(&state.input, KEY_LSHIFT)) releaseMouse(state.win.window, &state.input);
     else if (!isMouseGrabbed(&state.input)) grabMouse(state.win.window, state.win.width, state.win.height, &state.input);
 

@@ -33,12 +33,8 @@ int main()
     bool running = true;
     while (running)
     {
-        SDL_Event e;
-        while (SDL_PollEvent(&e)) {
-            ImGui_ImplSDL3_ProcessEvent(&e);
-            if (e.type == SDL_EVENT_QUIT) running = false;
-        }
         pollEvents(&win, &input);
+        if (isKeyDown(&input, KEY_ESCAPE)) running = false;
 
         for (int i = 0; i < win.bWidth * win.bHeight; i++) win.buffer[i] = 0xFF000000;
 

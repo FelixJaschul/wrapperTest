@@ -8,7 +8,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SUBMODULE_DIR="${ROOT_DIR}/wrapper/libs/SDL_shadercross"
-BUILD_DIR="${ROOT_DIR}/.build/shadercross"
+BUILD_DIR="${ROOT_DIR}/cmake-build-debug/shadercross"
 SUPER_DIR="${BUILD_DIR}/super"
 SUPER_BUILD="${BUILD_DIR}/super-build"
 
