@@ -42,6 +42,25 @@ typedef struct {
 
 static state_t state = {0};
 
+static void render_callback(Gpu *gpu, SDL_GPUCommandBuffer *cmd, SDL_GPURenderPass *pass, GpuRenderData *data)
+{
+    const float aspect = (data->height > 0) ? ((float)data->width / (float)data->height) : 1.0f;
+    const float tan_half_fov = tanf((state.cam.fov * PI / 180.0f) * 0.5f);
+
+    const VoxelUniforms u = {
+        .cam_pos     = {state.cam.position.x, state.cam.position.y, state.cam.position.z},
+        .cam_right   = {state.cam.right.x,    state.cam.right.y,    state.cam.right.z},
+        .cam_up      = {state.cam.up.x,       state.cam.up.y,       state.cam.up.z},
+        .cam_forward = {state.cam.front.x,    state.cam.front.y,    state.cam.front.z},
+        .screen      = {(float)data->width, (float)data->height, data->total_time, tan_half_fov},
+        .render_cfg  = {aspect, state.grid_size, state.max_dist, state.max_steps},
+    };
+
+    SDL_PushGPUFragmentUniformData(cmd, 0, &u, (Uint32)sizeof(u));
+    SDL_BindGPUGraphicsPipeline(pass, state.pipeline);
+    SDL_DrawGPUPrimitives(pass, 3, 1, 0, 0);
+}
+
 static void update()
 {
     pollEvents(&state.win, &state.input);
@@ -64,21 +83,6 @@ static bool render()
 {
     if (!state.pipeline) return false;
 
-    int width = 0, height = 0;
-    if (!gpuGetDrawableSize(&state.gpu, &width, &height)) return false;
-
-    const float aspect = (height > 0) ? ((float)width / (float)height) : 1.0f;
-    const float tan_half_fov = tanf((state.cam.fov * PI / 180.0f) * 0.5f);
-
-    const VoxelUniforms u = {
-        .cam_pos     = {state.cam.position.x, state.cam.position.y, state.cam.position.z},
-        .cam_right   = {state.cam.right.x,    state.cam.right.y,    state.cam.right.z},
-        .cam_up      = {state.cam.up.x,       state.cam.up.y,       state.cam.up.z},
-        .cam_forward = {state.cam.front.x,    state.cam.front.y,    state.cam.front.z},
-        .screen      = {(float)width, (float)height, state.ticks, tan_half_fov},
-        .render_cfg  = {aspect, state.grid_size, state.max_dist, state.max_steps},
-    };
-
     imguiNewFrame();
     ImGui::SetNextWindowPos(ImVec2(10, 10));
     ImGui::Begin("STATE", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs);
@@ -90,51 +94,9 @@ static bool render()
     ImGui::End();
     ImGui::Render();
 
-    SDL_GPUCommandBuffer *cmd = SDL_AcquireGPUCommandBuffer(state.gpu.device);
-    if (!cmd) return false;
+    GpuRenderData data = { .delta_time = (float)getDelta(&state.win), .total_time = state.ticks };
 
-    SDL_GPUTexture *swapchain = NULL;
-    Uint32 sw = 0, sh = 0;
-    if (!SDL_WaitAndAcquireGPUSwapchainTexture(cmd, state.win.window, &swapchain, &sw, &sh)) {
-        SDL_CancelGPUCommandBuffer(cmd);
-        return false;
-    }
-    if (!swapchain) {
-        SDL_SubmitGPUCommandBuffer(cmd);
-        return true;
-    }
-
-    imguiPrepareDrawData(cmd);
-
-    // Scene pass
-    {
-        SDL_GPUColorTargetInfo t = {};
-        t.texture     = swapchain;
-        t.load_op     = SDL_GPU_LOADOP_CLEAR;
-        t.store_op    = SDL_GPU_STOREOP_STORE;
-        t.clear_color = {state.gpu.clear_r, state.gpu.clear_g, state.gpu.clear_b, state.gpu.clear_a};
-
-        SDL_PushGPUFragmentUniformData(cmd, 0, &u, (Uint32)sizeof(u));
-
-        SDL_GPURenderPass *pass = SDL_BeginGPURenderPass(cmd, &t, 1, NULL);
-        SDL_BindGPUGraphicsPipeline(pass, state.pipeline);
-        SDL_DrawGPUPrimitives(pass, 3, 1, 0, 0);
-        SDL_EndGPURenderPass(pass);
-    }
-
-    // ImGui pass
-    {
-        SDL_GPUColorTargetInfo t = {};
-        t.texture  = swapchain;
-        t.load_op  = SDL_GPU_LOADOP_LOAD;
-        t.store_op = SDL_GPU_STOREOP_STORE;
-
-        SDL_GPURenderPass *pass = SDL_BeginGPURenderPass(cmd, &t, 1, NULL);
-        imguiRenderDrawData(cmd, pass);
-        SDL_EndGPURenderPass(pass);
-    }
-
-    return SDL_SubmitGPUCommandBuffer(cmd);
+    return gpuRenderFrame(&state.gpu, render_callback, &data);
 }
 
 int main()
