@@ -94,6 +94,9 @@ int main()
     state.rotation = 0.0f;
 
     while (state.running) {
+        printf("MODEL: %f | %f | %f\n", cube->position.x, cube->position.y, cube->position.z);
+        printf("CAMXY: %f | %f | %f\n", state.cam.position.x, state.cam.position.y, state.cam.position.z);
+        printf("CAMYP: %f | %f\n", state.cam.pitch, state.cam.yaw);
         update();
         render();
         updateFrame(&state.win);
