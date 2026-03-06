@@ -19,7 +19,7 @@ float stable_hash(vec3 p)
 
 bool voxel_occupied(ivec3 c)
 {
-    // Minimal default scene: sparse noisy voxel field with ground support.
+    // Minimal default scene: sparse noisy voxel field.
     const vec3 extent = vec3(1400.0, 8.0, 1400.0);
     if (abs(float(c.x)) > extent.x || abs(float(c.y)) > extent.y || abs(float(c.z)) > extent.z) return false;
 
